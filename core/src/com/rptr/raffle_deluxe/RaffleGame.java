@@ -201,4 +201,8 @@ public class RaffleGame extends ApplicationAdapter {
 	public void removeMe (Arrow arrow) {
 
 	}
+
+	public static int randint (int i) {
+		return (int)Math.random() % i;
+	}
 }
