@@ -1,10 +1,15 @@
 package com.rptr.raffle_deluxe;
 
-public class Balloon {
-    float x, y;
-
+public class Balloon extends Entity {
     Balloon (float x, float y) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
+    }
+
+    public boolean touchingMe (Arrow arrow) {
+        return true;
+    }
+
+    public void tick (float timeDelta) {
+        y -= timeDelta * 10;
     }
 }

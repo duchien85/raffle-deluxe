@@ -1,14 +1,14 @@
 package com.rptr.raffle_deluxe;
 
-public class Arrow {
-    float x, y,
+public class Arrow extends Entity {
+    float
           velX, velY,
           angle;
-    int tileX = 0, tileY = 0;
+    // should be oldTileX
+    int tileX = -1, tileY = -1;
 
     Arrow (float x, float y, float velX, float velY, float angle) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.velX = velX;
         this.velY = velY;
         this.angle = angle;
@@ -20,8 +20,17 @@ public class Arrow {
         x += timeDelta * velX;
         y += timeDelta * velY;
 
-        tileX =
+        int tx = getTileX();
+        int ty = getTileY();
 
-        game.hitArea();
+        if (tx != tileX || ty != tileY) {
+            game.hitArea(tx, ty, this);
+            tileX = tx;
+            tileY = ty;
+        }
+
+        if (outsideScreen()) {
+            game.removeMe(this);
+        }
     }
 }

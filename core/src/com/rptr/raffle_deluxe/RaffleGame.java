@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -24,8 +25,11 @@ public class RaffleGame extends ApplicationAdapter {
 
 	Texture texBow,
 			texBloon,
-			texArrow;
+			texArrow,
+			texCastle,
+			texWall;
 	TextureRegion regionBow, regionArrow;
+	BitmapFont font1;
 
 	Array<Balloon> balloons;
 	Array<Arrow> arrows;
@@ -35,9 +39,16 @@ public class RaffleGame extends ApplicationAdapter {
 
 	final static int width = 800;
 	final static int height = 600;
-	int side_panel_w = 200;
+	final static int tile_width = 50;
+	final static int tile_margin = 10;
+	final static int tile_total_width = tile_width + tile_margin * 2;
+
+	final static int side_panel_w = 200;
 
 	long lastFire, reloadTime = 500;
+	long lastBalloon, balloonInterval = 6 * 1000;
+
+	int score = 0;
 
 	@Override
 	public void create () {
@@ -47,6 +58,11 @@ public class RaffleGame extends ApplicationAdapter {
 		texBow = new Texture("Bow1.png");
 		texBloon = new Texture("balloon_green.png");
 		texArrow = new Texture("Arrow1.png");
+
+		texCastle = new Texture("castle.jpg");
+		texWall = new Texture("wall.png");
+
+		font1 = new BitmapFont(Gdx.files.internal("HamletOrNot.fnt"), false);
 
 		regionBow = new TextureRegion(texBow);
 		regionArrow = new TextureRegion(texArrow,
@@ -71,6 +87,13 @@ public class RaffleGame extends ApplicationAdapter {
 
 		float degs = (float)bowAngle * 180 / (float)Math.PI;
 		float h = regionBow.getRegionHeight();
+		float delta = Gdx.graphics.getDeltaTime();
+
+		// background
+		batch.draw(texCastle, 0, 0, width, height);
+		batch.draw(texWall, 0, 0, width, height);
+
+		font1.draw(batch, "Score: "+score, width - side_panel_w, height - 50);
 
 		// bow
 		batch.draw(regionBow, bow.x, bow.y, 0, h / 2,
@@ -87,13 +110,21 @@ public class RaffleGame extends ApplicationAdapter {
 					0.5f, 0.5f, degs);
 		}
 
+		// balloons
 		for (Balloon b : balloons) {
+			b.tick(delta);
 			batch.draw(texBloon, b.x, b.y, 50, 50);
+		}
+
+		long time = System.currentTimeMillis();
+
+		if (time >= lastBalloon + balloonInterval) {
+			generateBallonRow(1);
+			lastBalloon = time;
 		}
 
 		batch.end();
 
-		long time = System.currentTimeMillis();
 		boolean touched = Gdx.input.isTouched();
 
 		float x = Gdx.input.getX();
@@ -116,7 +147,7 @@ public class RaffleGame extends ApplicationAdapter {
 		double angle = bowAngle;
 		double dx = Math.cos(angle);
 		double dy = Math.sin(angle);
-		float power = 2;
+		float power = 4;
 		float vx = (float)dx * power;
 		float vy = (float)dy * power;
 
@@ -130,21 +161,44 @@ public class RaffleGame extends ApplicationAdapter {
 	}
 
 	private void generateLevel () {
-		int numx = 8;
 		int numy = 5;
-		float w = 50;
-		float h = 50;
-		float margin = 10;
 
-		for (int x = 0; x < numx; x ++) {
-			for (int y = 1; y <= numy; y ++) {
-				spawnBalloon((float)x * (w + margin),
-						height - (float)y * (h + margin));
-			}
+		for (int y = 1; y <= numy; y ++) {
+			generateBallonRow(y);
 		}
 	}
 
-	public void hitArea () {
+	private void generateBallonRow (int y) {
+		int numx = 8;
+		float w = 50;
+		float h = 50;
+		float margin = 20;
+
+		for (int x = 0; x < numx; x ++) {
+			spawnBalloon((float)x * (w + margin),
+					height - (float)y * (h + margin));
+		}
+	}
+
+	public void hitArea (int tx, int ty, Arrow arrow) {
+		Balloon bloon = getBalloonAt(tx, ty);
+
+		if (bloon != null && bloon.touchingMe(arrow)) {
+			balloons.removeValue(bloon, false);
+			score += 1;
+		}
+	}
+
+	private Balloon getBalloonAt (int tx, int ty) {
+		for (Balloon b : balloons) {
+			if (b.getTileX() == tx && b.getTileY() == ty)
+				return b;
+		}
+
+		return null;
+	}
+
+	public void removeMe (Arrow arrow) {
 
 	}
 }
