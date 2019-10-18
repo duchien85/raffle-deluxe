@@ -18,7 +18,7 @@ public class Jukebox {
         twangs.add(loadSound("sfx/arrowHit05.wav"));
 
         pops = new Array<>();
-        pops.add(loadSound("sfx/swish_2.wav"));
+        pops.add(loadSound("sfx/pop.ogg"));
     }
 
     public void playTwang () {

@@ -35,6 +35,8 @@ public class RaffleGame extends ApplicationAdapter {
 	Array<Arrow> arrows;
 	Rectangle bow;
 
+	Jukebox jukebox;
+
 	double bowAngle = 0.0f;
 
 	final static int width = 800;
@@ -52,6 +54,8 @@ public class RaffleGame extends ApplicationAdapter {
 
 	@Override
 	public void create () {
+		jukebox = new Jukebox();
+
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 
@@ -153,6 +157,8 @@ public class RaffleGame extends ApplicationAdapter {
 
 		Arrow arrow = new Arrow(bow.x, bow.y, vx, vy, (float)angle);
 		arrows.add(arrow);
+
+		jukebox.playTwang();
 	}
 
 	private void spawnBalloon (float x, float y) {
@@ -186,6 +192,7 @@ public class RaffleGame extends ApplicationAdapter {
 		if (bloon != null && bloon.touchingMe(arrow)) {
 			balloons.removeValue(bloon, false);
 			score += 1;
+			jukebox.playPop();
 		}
 	}
 
