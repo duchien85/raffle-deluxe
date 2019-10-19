@@ -74,6 +74,6 @@ public class Arrow extends Entity {
         double dy = Math.sin(angle);
 
         velX = (float)dx * Math.abs(velX);
-        velY = (float)dy * Math.abs(velY);
+        velY = (float)dy ;
     }
 }
