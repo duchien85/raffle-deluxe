@@ -167,7 +167,7 @@ public class RaffleGame extends ApplicationAdapter {
 	}
 
 	private void generateLevel () {
-		int numy = 5;
+		int numy = 3;
 
 		for (int y = 1; y <= numy; y ++) {
 			generateBallonRow(y);
@@ -175,13 +175,13 @@ public class RaffleGame extends ApplicationAdapter {
 	}
 
 	private void generateBallonRow (int y) {
-		int numx = 8;
+		int numx = 7;
 		float w = 50;
 		float h = 50;
 		float margin = 20;
 
 		for (int x = 0; x < numx; x ++) {
-			spawnBalloon((float)x * (w + margin),
+			spawnBalloon((float)x * (w + margin) + 30,
 					height - (float)y * (h + margin));
 		}
 	}
