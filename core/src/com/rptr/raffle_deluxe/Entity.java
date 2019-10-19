@@ -17,9 +17,9 @@ public class Entity {
     }
 
     protected boolean outsideScreen () {
-        return x < 0 ||
-                y < 0 ||
-                x >= RaffleGame.width - RaffleGame.side_panel_w ||
-                y >= RaffleGame.height;
+        return x < RaffleGame.screen_left_edge ||
+                y <  RaffleGame.screen_left_edge ||
+                x >= RaffleGame.screen_right_edge ||
+                y >= RaffleGame.screen_top_edge;
     }
 }

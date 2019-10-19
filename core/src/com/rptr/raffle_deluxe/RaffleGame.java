@@ -44,8 +44,11 @@ public class RaffleGame extends ApplicationAdapter {
 	final static int tile_width = 50;
 	final static int tile_margin = 10;
 	final static int tile_total_width = tile_width + tile_margin * 2;
-
+	final static int screen_left_edge = 30;
+	final static int screen_top_edge = height - 30;
 	final static int side_panel_w = 200;
+	final static int screen_right_edge = width - side_panel_w - 30;
+	final static int screen_bottom_edge = 30;
 
 	long lastFire, reloadTime = 500;
 	long lastBalloon, balloonInterval = 6 * 1000;
@@ -77,7 +80,7 @@ public class RaffleGame extends ApplicationAdapter {
 
 		int w = width - side_panel_w;
 		int h = height;
-		bow = new Rectangle(w / 2, 0, 50, 50);
+		bow = new Rectangle(w / 2, screen_left_edge + 5, 50, 50);
 
 		generateLevel();
 	}
@@ -109,9 +112,11 @@ public class RaffleGame extends ApplicationAdapter {
 		for (Arrow a : arrows) {
 			a.tick(this);
 			degs = a.angle * 180 / (float)Math.PI;
-			batch.draw(regionArrow, a.x, a.y, 0, 0,
-					texArrow.getWidth(), texArrow.getHeight(),
-					0.5f, 0.5f, degs);
+			int w2 = texArrow.getWidth();
+			int h2 = texArrow.getHeight();
+			batch.draw(regionArrow, a.x - w2, a.y - h2/2, w2, h2/2,
+					w2, h2,
+					1.0f, 1.0f, degs);
 		}
 
 		// balloons
@@ -151,9 +156,8 @@ public class RaffleGame extends ApplicationAdapter {
 		double angle = bowAngle;
 		double dx = Math.cos(angle);
 		double dy = Math.sin(angle);
-		float power = 4;
-		float vx = (float)dx * power;
-		float vy = (float)dy * power;
+		float vx = (float)dx;
+		float vy = (float)dy;
 
 		Arrow arrow = new Arrow(bow.x, bow.y, vx, vy, (float)angle);
 		arrows.add(arrow);
@@ -206,7 +210,7 @@ public class RaffleGame extends ApplicationAdapter {
 	}
 
 	public void removeMe (Arrow arrow) {
-
+		arrows.removeValue(arrow, true);
 	}
 
 	public static int randint (int i) {
