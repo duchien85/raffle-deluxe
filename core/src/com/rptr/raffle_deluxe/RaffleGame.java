@@ -110,7 +110,7 @@ public class RaffleGame extends ApplicationAdapter {
 
 		// arrows
 		for (Arrow a : arrows) {
-			a.tick(this);
+			a.tick(this, delta);
 			degs = a.angle * 180 / (float)Math.PI;
 			int w2 = texArrow.getWidth();
 			int h2 = texArrow.getHeight();

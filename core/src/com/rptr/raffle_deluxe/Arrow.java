@@ -4,7 +4,7 @@ public class Arrow extends Entity {
     float
           velX, velY,
           angle,
-          power = 10;
+          power = 500;
     boolean suicide = false;
 
     // should be oldTileX
@@ -17,9 +17,7 @@ public class Arrow extends Entity {
         this.angle = angle;
     }
 
-    public void tick (RaffleGame game) {
-        float timeDelta = 1.0f;
-
+    public void tick (RaffleGame game, float timeDelta) {
         x += timeDelta * velX * power;
         y += timeDelta * velY * power;
 
@@ -31,6 +29,15 @@ public class Arrow extends Entity {
             tileX = tx;
             tileY = ty;
         }
+
+        float grav = 0.5f;
+
+        velY -= timeDelta * grav;
+
+        float nx = x + velX;
+        float ny = y + velY;
+        double ang = Math.atan2(ny - y, nx - x);
+        angle = (float)ang;
 
         if (outsideScreen()) {
             bounce();
@@ -62,10 +69,11 @@ public class Arrow extends Entity {
             angle = ((float)Math.PI - angle);
         }
 
+        // set vel based on angle
         double dx = Math.cos(angle);
         double dy = Math.sin(angle);
 
-        velX = (float)dx;
-        velY = (float)dy;
+        velX = (float)dx * Math.abs(velX);
+        velY = (float)dy * Math.abs(velY);
     }
 }
